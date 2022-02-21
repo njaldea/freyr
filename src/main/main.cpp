@@ -5,21 +5,12 @@
 
 extern "C"
 {
-    EMSCRIPTEN_KEEPALIVE
-    int foo()
+    /**
+     * EMSCRIPTEN_KEEPALIVE will automatically export the method
+     */
+    int EMSCRIPTEN_KEEPALIVE foo()
     {
         std::cout << "foo hello, world!\n";
         return 0;
     }
-}
-
-int main()
-{
-    std::unordered_map<int, int> m;
-    for (const auto &[k, v] : m)
-    {
-    }
-
-    std::cout << "main hello, world!\n";
-    return 0;
 }
