@@ -1,13 +1,25 @@
-/*
- * Copyright 2011 The Emscripten Authors.  All rights reserved.
- * Emscripten is available under two separate licenses, the MIT license and the
- * University of Illinois/NCSA Open Source License.  Both these licenses can be
- * found in the LICENSE file.
- */
-
 #include <iostream>
 
-int main() {
-  std::cout << "hello, world!\n";
-  return 0;
+#include <emscripten.h>
+#include <unordered_map>
+
+extern "C"
+{
+    EMSCRIPTEN_KEEPALIVE
+    int foo()
+    {
+        std::cout << "foo hello, world!\n";
+        return 0;
+    }
+}
+
+int main()
+{
+    std::unordered_map<int, int> m;
+    for (const auto &[k, v] : m)
+    {
+    }
+
+    std::cout << "main hello, world!\n";
+    return 0;
 }
