@@ -1,5 +1,4 @@
-import { default as MAIN } from '../.build/bin/main.js';
-const main = await MAIN();
+import main from './main.js';
 
 console.log("javascript", "_foo");
 main._foo(2);

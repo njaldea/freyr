@@ -9,13 +9,7 @@ project(main)
 add_executable(${PROJECT_NAME} main.cpp)
 
 # add modularize to disable auto execute
-# i need to do the following to import the js file
-
-# import { default as MAIN } from './main.js';
-# async function main() {
-#     const m = await MAIN();
-#     console.log(m._foo());
-# }
-# main();
+# and be able to `await` to and continue only when
+# the module is fully loaded
 target_link_options(${PROJECT_NAME} PRIVATE "-sMODULARIZE")
 target_link_options(${PROJECT_NAME} PRIVATE "--bind")

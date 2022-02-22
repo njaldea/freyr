@@ -118,7 +118,7 @@ public:
     }
 };
 
-EMSCRIPTEN_BINDINGS(Trial)
+EMSCRIPTEN_BINDINGS()
 {
     emscripten::value_object<ValueObject>("ValueStruct_value_object")
         .field("x", &ValueObject::x);
