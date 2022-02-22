@@ -1,8 +1,8 @@
 project(example-demo)
 
-add_npm_run_target(
+add_npm_executable(
     TARGET example-demo-start
     ARGS start
-    DEPENDS main
+    DEPENDS semantics
     COMMENT "RUNNING DEMO"
 )

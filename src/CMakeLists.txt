@@ -1,1 +1,2 @@
-add_subdirectory(main)
+add_subdirectory(semantics)
+add_subdirectory(opengl)

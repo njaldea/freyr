@@ -1,6 +1,12 @@
 include(CMakeParseArguments)
 
-function(add_npm_run_target)
+add_custom_target(
+    fileserver
+    COMMAND python3 -m http.server
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
+function(add_npm_executable)
     cmake_parse_arguments(
         PARSED_ARGS         # prefix of output variables
         ""                  # list of names of the boolean arguments (only defined ones will be true)
@@ -16,4 +22,18 @@ function(add_npm_run_target)
         DEPENDS ${PARSED_ARGS_DEPENDS}
         COMMENT ${PARSED_ARGS_COMMENT}
     )
-endfunction(add_npm_run_target)
+endfunction(add_npm_executable)
+
+function(add_jsmodule TARGET)
+    add_executable(${TARGET} ${ARGN})
+
+    # add modularize to disable auto execute
+    # and be able to `await` to and continue only when
+    # the module is fully loaded
+    target_link_options(${TARGET} PRIVATE "-sMODULARIZE")
+endfunction(add_jsmodule)
+
+function(add_html TARGET)
+    add_executable(${TARGET} ${ARGN})
+    set_target_properties(${TARGET} PROPERTIES SUFFIX ".html")
+endfunction(add_html)
