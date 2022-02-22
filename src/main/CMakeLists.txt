@@ -18,3 +18,4 @@ add_executable(${PROJECT_NAME} main.cpp)
 # }
 # main();
 target_link_options(${PROJECT_NAME} PRIVATE "-sMODULARIZE")
+target_link_options(${PROJECT_NAME} PRIVATE "--bind")
