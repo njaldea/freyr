@@ -60,7 +60,7 @@ GLuint LoadShader(GLenum type, const char *shaderSrc)
             char *infoLog = (char *)malloc(sizeof(char) * infoLen);
 
             glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
-            esLogMessage("Error compiling shader:\n%s\n", infoLog);
+            std::cout << "Error compiling shader: " << infoLog << std::endl;
 
             free(infoLog);
         }
@@ -132,7 +132,7 @@ int Init(ESContext *esContext)
             char *infoLog = (char *)malloc(sizeof(char) * infoLen);
 
             glGetProgramInfoLog(programObject, infoLen, NULL, infoLog);
-            esLogMessage("Error linking program:\n%s\n", infoLog);
+            std::cout << "Error linking program: " << infoLog << std::endl;
 
             free(infoLog);
         }
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
     ESContext esContext;
     UserData userData;
 
-    esInitContext(&esContext);
+    memset(&esContext, 0, sizeof(ESContext));
     esContext.userData = &userData;
 
     esCreateWindow(&esContext, "Hello Triangle", 320, 100, ES_WINDOW_RGB);
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
     if (!Init(&esContext))
         return 0;
 
-    esRegisterDrawFunc(&esContext, Draw);
+    esContext.drawFunc = Draw;
 
     esMainLoop(&esContext);
 }
