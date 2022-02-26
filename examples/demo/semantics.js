@@ -1,2 +1,2 @@
-import SEMANTICS from '../../.build/bin/semantics.js';
+import SEMANTICS from '../../.build/bin/semantics/index.js';
 export default await SEMANTICS();

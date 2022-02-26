@@ -25,32 +25,41 @@ extern "C"
 // it is automatically converted to a JS object instance
 // thus, to be "read" by c++, it is necessary to be converted
 // back to C++ instance.
-struct ValueObject {
+
+struct ValueObject
+{
     int x;
 
-    ValueObject(int _x): x(_x) {
+    ValueObject(int _x): x(_x)
+    {
         std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 
-    ValueObject(): ValueObject(100) {
+    ValueObject(): ValueObject(100)
+    {
     }
 
-    ~ValueObject() {
+    ~ValueObject()
+    {
         std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 };
 
-struct ValueArray {
+struct ValueArray
+{
     int x;
 
-    ValueArray(int _x): x(_x) {
+    ValueArray(int _x): x(_x)
+    {
         std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 
-    ValueArray(): ValueArray(100) {
+    ValueArray(): ValueArray(100)
+    {
     }
 
-    ~ValueArray() {
+    ~ValueArray()
+    {
         std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 };
@@ -104,16 +113,18 @@ public:
     // using unique_ptr seems to be confusing.
     // calling delete() in js side seems to not "break"
     // even if it is already deleted here.
-    void foo(Freyr &f)
+    void foo(Freyr& f)
     {
         f.foo(100);
     }
 
-    void fizz(ValueObject& v) {
+    void fizz(ValueObject& v)
+    {
         std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << ":" << v.x << std::endl;
     }
-    
-    void fuzz(ValueArray& v) {
+
+    void fuzz(ValueArray& v)
+    {
         std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << ":" << v.x << std::endl;
     }
 };
@@ -138,4 +149,18 @@ EMSCRIPTEN_BINDINGS()
 
     emscripten::function("non_c_function_array", &non_c_function_array);
     emscripten::function("non_c_function_object", &non_c_function_object);
+}
+
+#include <emscripten/html5.h>
+
+EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData)
+{
+    // std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
+    std::cout << eventType << ':' << e->movementX << ':' << e->movementY << std::endl;
+    return false;
+}
+
+int main()
+{
+    emscripten_set_mousemove_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
 }

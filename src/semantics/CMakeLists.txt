@@ -12,3 +12,10 @@ add_jsmodule(
 )
 
 target_link_options(${PROJECT_NAME} PRIVATE "--bind")
+
+add_html(
+    ${PROJECT_NAME}-html
+    src/semantics.cpp
+)
+
+target_link_options(${PROJECT_NAME}-html PRIVATE "--bind")
