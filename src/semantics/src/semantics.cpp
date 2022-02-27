@@ -2,6 +2,8 @@
 
 #include <emscripten.h>
 #include <emscripten/bind.h>
+#include <emscripten/html5.h>
+
 #include <unordered_map>
 
 #include <memory>
@@ -151,11 +153,9 @@ EMSCRIPTEN_BINDINGS()
     emscripten::function("non_c_function_object", &non_c_function_object);
 }
 
-#include <emscripten/html5.h>
-
 EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData)
 {
-    // std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     std::cout << eventType << ':' << e->movementX << ':' << e->movementY << std::endl;
     return false;
 }

@@ -29,9 +29,9 @@ extern "C"
 {
 #endif
 
-///
-//  Macros
-//
+    ///
+    //  Macros
+    //
 #define ESUTIL_API
 #define ESCALLBACK
 
@@ -65,7 +65,7 @@ extern "C"
     typedef struct _escontext
     {
         /// Put your user data here...
-        void *userData;
+        void* userData;
 
         /// Window width
         GLint width;
@@ -86,9 +86,9 @@ extern "C"
         EGLSurface eglSurface;
 
         /// Callbacks
-        void(ESCALLBACK *drawFunc)(struct _escontext *);
-        void(ESCALLBACK *keyFunc)(struct _escontext *, unsigned char, int, int);
-        void(ESCALLBACK *updateFunc)(struct _escontext *, float deltaTime);
+        void(ESCALLBACK* drawFunc)(struct _escontext*);
+        void(ESCALLBACK* keyFunc)(struct _escontext*, unsigned char, int, int);
+        void(ESCALLBACK* updateFunc)(struct _escontext*, float deltaTime);
     } ESContext;
 
     //
@@ -104,13 +104,13 @@ extern "C"
     ///         ES_WINDOW_STENCIL - specifies that a stencil buffer should be created
     ///         ES_WINDOW_MULTISAMPLE - specifies that a multi-sample buffer should be created
     /// \return GL_TRUE if window creation is succesful, GL_FALSE otherwise
-    GLboolean ESUTIL_API esCreateWindow(ESContext *esContext, const char *title, GLint width, GLint height, GLuint flags);
+    GLboolean ESUTIL_API esCreateWindow(ESContext* esContext, const char* title, GLint width, GLint height, GLuint flags);
 
     //
     /// \brief Start the main loop for the OpenGL ES application
     /// \param esContext Application context
     //
-    void ESUTIL_API esMainLoop(ESContext *esContext);
+    void ESUTIL_API esMainLoop(ESContext* esContext);
 
 #ifdef __cplusplus
 }

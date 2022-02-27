@@ -29,7 +29,7 @@ typedef struct
 // Create a shader object, load the shader source, and
 // compile the shader.
 //
-GLuint LoadShader(GLenum type, const char *shaderSrc)
+GLuint LoadShader(GLenum type, const char* shaderSrc)
 {
     GLuint shader;
     GLint compiled;
@@ -57,7 +57,7 @@ GLuint LoadShader(GLenum type, const char *shaderSrc)
 
         if (infoLen > 1)
         {
-            char *infoLog = (char *)malloc(sizeof(char) * infoLen);
+            char* infoLog = (char*)malloc(sizeof(char) * infoLen);
 
             glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
             std::cout << "Error compiling shader: " << infoLog << std::endl;
@@ -75,11 +75,11 @@ GLuint LoadShader(GLenum type, const char *shaderSrc)
 ///
 // Initialize the shader and program object
 //
-int Init(ESContext *esContext)
+int Init(ESContext* esContext)
 {
     esContext->userData = malloc(sizeof(UserData));
 
-    UserData *userData = (UserData *)esContext->userData;
+    UserData* userData = (UserData*)esContext->userData;
     GLbyte vShaderStr[] =
         "attribute vec4 vPosition;    \n"
         "void main()                  \n"
@@ -100,8 +100,8 @@ int Init(ESContext *esContext)
     GLint linked;
 
     // Load the vertex/fragment shaders
-    vertexShader = LoadShader(GL_VERTEX_SHADER, (const char *)vShaderStr);
-    fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (const char *)fShaderStr);
+    vertexShader = LoadShader(GL_VERTEX_SHADER, (const char*)vShaderStr);
+    fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (const char*)fShaderStr);
 
     // Create the program object
     programObject = glCreateProgram();
@@ -129,7 +129,7 @@ int Init(ESContext *esContext)
 
         if (infoLen > 1)
         {
-            char *infoLog = (char *)malloc(sizeof(char) * infoLen);
+            char* infoLog = (char*)malloc(sizeof(char) * infoLen);
 
             glGetProgramInfoLog(programObject, infoLen, NULL, infoLog);
             std::cout << "Error linking program: " << infoLog << std::endl;
@@ -151,12 +151,12 @@ int Init(ESContext *esContext)
 ///
 // Draw a triangle using the shader pair created in Init()
 //
-void Draw(ESContext *esContext)
+void Draw(ESContext* esContext)
 {
-    UserData *userData = (UserData *)esContext->userData;
-    GLfloat vVertices[] = {0.0f, 0.5f, 0.0f,
+    UserData* userData = (UserData*)esContext->userData;
+    GLfloat vVertices[] = { 0.0f, 0.5f, 0.0f,
                            -0.5f, -0.5f, 0.0f,
-                           0.5f, -0.5f, 0.0f};
+                           0.5f, -0.5f, 0.0f };
 
     // No clientside arrays, so do this in a webgl-friendly manner
     GLuint vertexPosObject;
@@ -181,7 +181,7 @@ void Draw(ESContext *esContext)
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     ESContext esContext;
     UserData userData;

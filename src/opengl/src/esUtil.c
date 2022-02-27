@@ -32,16 +32,19 @@
 #include <X11/Xutil.h>
 
 // X11 related local variables
-static Display *x_display = NULL;
+static Display* x_display = NULL;
 
 ///
 // CreateEGLContext()
 //
 //    Creates an EGL rendering context and all associated elements
 //
-EGLBoolean CreateEGLContext(EGLNativeWindowType hWnd, EGLDisplay *eglDisplay,
-                            EGLContext *eglContext, EGLSurface *eglSurface,
-                            EGLint attribList[])
+EGLBoolean CreateEGLContext(
+    EGLNativeWindowType hWnd,
+    EGLDisplay* eglDisplay,
+    EGLContext* eglContext,
+    EGLSurface* eglSurface,
+    EGLint attribList[])
 {
     EGLint numConfigs;
     EGLint majorVersion;
@@ -50,7 +53,7 @@ EGLBoolean CreateEGLContext(EGLNativeWindowType hWnd, EGLDisplay *eglDisplay,
     EGLContext context;
     EGLSurface surface;
     EGLConfig config;
-    EGLint contextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE};
+    EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
 
     // Get Display
     display = eglGetDisplay((EGLNativeDisplayType)x_display);
@@ -108,7 +111,7 @@ EGLBoolean CreateEGLContext(EGLNativeWindowType hWnd, EGLDisplay *eglDisplay,
 //
 //      This function initialized the native X11 display and window for EGL
 //
-EGLBoolean WinCreate(ESContext *esContext, const char *title)
+EGLBoolean WinCreate(ESContext* esContext, const char* title)
 {
     Window root;
     XSetWindowAttributes swa;
@@ -184,18 +187,19 @@ EGLBoolean WinCreate(ESContext *esContext, const char *title)
 //          ES_WINDOW_STENCIL     - specifies that a stencil buffer should be created
 //          ES_WINDOW_MULTISAMPLE - specifies that a multi-sample buffer should be created
 //
-GLboolean ESUTIL_API esCreateWindow(ESContext *esContext, const char *title, GLint width, GLint height, GLuint flags)
+GLboolean ESUTIL_API esCreateWindow(ESContext* esContext, const char* title, GLint width, GLint height, GLuint flags)
 {
     EGLint attribList[] =
-        {
-            EGL_RED_SIZE, 5,
-            EGL_GREEN_SIZE, 6,
-            EGL_BLUE_SIZE, 5,
-            EGL_ALPHA_SIZE, (flags & ES_WINDOW_ALPHA) ? 8 : EGL_DONT_CARE,
-            EGL_DEPTH_SIZE, (flags & ES_WINDOW_DEPTH) ? 8 : EGL_DONT_CARE,
-            EGL_STENCIL_SIZE, (flags & ES_WINDOW_STENCIL) ? 8 : EGL_DONT_CARE,
-            EGL_SAMPLE_BUFFERS, (flags & ES_WINDOW_MULTISAMPLE) ? 1 : 0,
-            EGL_NONE};
+    {
+        EGL_RED_SIZE, 5,
+        EGL_GREEN_SIZE, 6,
+        EGL_BLUE_SIZE, 5,
+        EGL_ALPHA_SIZE, (flags & ES_WINDOW_ALPHA) ? 8 : EGL_DONT_CARE,
+        EGL_DEPTH_SIZE, (flags & ES_WINDOW_DEPTH) ? 8 : EGL_DONT_CARE,
+        EGL_STENCIL_SIZE, (flags & ES_WINDOW_STENCIL) ? 8 : EGL_DONT_CARE,
+        EGL_SAMPLE_BUFFERS, (flags & ES_WINDOW_MULTISAMPLE) ? 1 : 0,
+        EGL_NONE
+    };
 
     if (esContext == NULL)
     {
@@ -211,10 +215,10 @@ GLboolean ESUTIL_API esCreateWindow(ESContext *esContext, const char *title, GLi
     }
 
     if (!CreateEGLContext(esContext->hWnd,
-                          &esContext->eglDisplay,
-                          &esContext->eglContext,
-                          &esContext->eglSurface,
-                          attribList))
+        &esContext->eglDisplay,
+        &esContext->eglContext,
+        &esContext->eglSurface,
+        attribList))
     {
         return GL_FALSE;
     }
@@ -227,7 +231,7 @@ GLboolean ESUTIL_API esCreateWindow(ESContext *esContext, const char *title, GLi
 //
 //    Start the main loop for the OpenGL ES application
 //
-void ESUTIL_API esMainLoop(ESContext *esContext)
+void ESUTIL_API esMainLoop(ESContext* esContext)
 {
     struct timeval t1, t2;
     struct timezone tz;
