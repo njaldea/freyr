@@ -2,22 +2,21 @@
 
 ----
 
+## tooling
+- install clang-format
+
+> wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+> echo "deb http://apt.llvm.org/focal/ llvm-toolchain-focal main" | sudo tee -a /etc/apt/sources.list
+> sudo apt update
+> sudo apt install clang-format-18
+
 ## setup kit
-- Ctrl+p
-- `CMake: Edit User-Local CMake Kits`
-```json
-{
-    "name": "Emscripten",
-    "compilers": {
-      "C": "<path to emsdk>/upstream/emscripten/emcc",
-      "CXX": "<path to emsdk>/upstream/emscripten/em++"
-    }
-}
-```
+> source ./emsdk_env.sh
+this should add `EMSDK` env var
 
 ----
 
-## settings.json
+## settings.json (not sure if used)
 - add the following
 ```json
 {
@@ -31,7 +30,7 @@
 
 the configuration above is normally set up by `emcmake` wrapper
 
-# To fix intellisense, update c_cpp_properties.json
+# To fix intellisense, update c_cpp_properties.json (now in workspace)
 - set compiler path
 ```json
 {

@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.16.3)
-project(wasm_test)
+
+set(CMAKE_CXX_COMPILER $ENV{EMSDK}/upstream/emscripten/em++)
+set(CMAKE_C_COMPILER $ENV{EMSDK}/upstream/emscripten/emcc)
+
+project(freyr)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -14,3 +18,7 @@ include(cmake/freyr.cmake)
 
 add_subdirectory(src)
 add_subdirectory(examples)
+
+find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format-18)
+file(GLOB_RECURSE ALL_SOURCE_FILES *.c *.cpp *.h *.hpp)
+add_custom_target(format COMMAND ${CLANG_FORMAT_EXECUTABLE} -i ${ALL_SOURCE_FILES})

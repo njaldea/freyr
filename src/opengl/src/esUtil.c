@@ -18,17 +18,17 @@
 ///
 //  Includes
 //
+#include <EGL/egl.h>
+#include <GLES2/gl2.h>
+#include <freyr/opengl/esUtil.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
 #include <sys/time.h>
-#include <GLES2/gl2.h>
-#include <EGL/egl.h>
-#include <freyr/opengl/esUtil.h>
 
-#include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 // X11 related local variables
@@ -44,7 +44,8 @@ EGLBoolean CreateEGLContext(
     EGLDisplay* eglDisplay,
     EGLContext* eglContext,
     EGLSurface* eglSurface,
-    EGLint attribList[])
+    EGLint attribList[]
+)
 {
     EGLint numConfigs;
     EGLint majorVersion;
@@ -53,7 +54,9 @@ EGLBoolean CreateEGLContext(
     EGLContext context;
     EGLSurface surface;
     EGLConfig config;
-    EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
+    EGLint contextAttribs[] = {
+        EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE
+    };
 
     // Get Display
     display = eglGetDisplay((EGLNativeDisplayType)x_display);
@@ -81,7 +84,9 @@ EGLBoolean CreateEGLContext(
     }
 
     // Create a surface
-    surface = eglCreateWindowSurface(display, config, (EGLNativeWindowType)hWnd, NULL);
+    surface = eglCreateWindowSurface(
+        display, config, (EGLNativeWindowType)hWnd, NULL
+    );
     if (surface == EGL_NO_SURFACE)
     {
         return EGL_FALSE;
@@ -111,7 +116,7 @@ EGLBoolean CreateEGLContext(
 //
 //      This function initialized the native X11 display and window for EGL
 //
-EGLBoolean WinCreate(ESContext* esContext, const char* title)
+EGLBoolean WinCreate(ESContext* esContext, char const* title)
 {
     Window root;
     XSetWindowAttributes swa;
@@ -137,11 +142,19 @@ EGLBoolean WinCreate(ESContext* esContext, const char* title)
 
     swa.event_mask = ExposureMask | PointerMotionMask | KeyPressMask;
     win = XCreateWindow(
-        x_display, root,
-        0, 0, esContext->width, esContext->height, 0,
-        CopyFromParent, InputOutput,
-        CopyFromParent, CWEventMask,
-        &swa);
+        x_display,
+        root,
+        0,
+        0,
+        esContext->width,
+        esContext->height,
+        0,
+        CopyFromParent,
+        InputOutput,
+        CopyFromParent,
+        CWEventMask,
+        &swa
+    );
 
     xattr.override_redirect = FALSE;
     XChangeWindowAttributes(x_display, win, CWOverrideRedirect, &xattr);
@@ -169,7 +182,8 @@ EGLBoolean WinCreate(ESContext* esContext, const char* title)
         DefaultRootWindow(x_display),
         FALSE,
         SubstructureNotifyMask,
-        &xev);
+        &xev
+    );
 
     esContext->hWnd = (EGLNativeWindowType)win;
     return EGL_TRUE;
@@ -182,22 +196,35 @@ EGLBoolean WinCreate(ESContext* esContext, const char* title)
 //      width - width of window to create
 //      height - height of window to create
 //      flags  - bitwise or of window creation flags
-//          ES_WINDOW_ALPHA       - specifies that the framebuffer should have alpha
-//          ES_WINDOW_DEPTH       - specifies that a depth buffer should be created
-//          ES_WINDOW_STENCIL     - specifies that a stencil buffer should be created
-//          ES_WINDOW_MULTISAMPLE - specifies that a multi-sample buffer should be created
+//          ES_WINDOW_ALPHA       - specifies that the framebuffer should have
+//          alpha ES_WINDOW_DEPTH       - specifies that a depth buffer should
+//          be created ES_WINDOW_STENCIL     - specifies that a stencil buffer
+//          should be created ES_WINDOW_MULTISAMPLE - specifies that a
+//          multi-sample buffer should be created
 //
-GLboolean ESUTIL_API esCreateWindow(ESContext* esContext, const char* title, GLint width, GLint height, GLuint flags)
+GLboolean ESUTIL_API esCreateWindow(
+    ESContext* esContext,
+    char const* title,
+    GLint width,
+    GLint height,
+    GLuint flags
+)
 {
-    EGLint attribList[] =
-    {
-        EGL_RED_SIZE, 5,
-        EGL_GREEN_SIZE, 6,
-        EGL_BLUE_SIZE, 5,
-        EGL_ALPHA_SIZE, (flags & ES_WINDOW_ALPHA) ? 8 : EGL_DONT_CARE,
-        EGL_DEPTH_SIZE, (flags & ES_WINDOW_DEPTH) ? 8 : EGL_DONT_CARE,
-        EGL_STENCIL_SIZE, (flags & ES_WINDOW_STENCIL) ? 8 : EGL_DONT_CARE,
-        EGL_SAMPLE_BUFFERS, (flags & ES_WINDOW_MULTISAMPLE) ? 1 : 0,
+    EGLint attribList[] = {
+        EGL_RED_SIZE,
+        5,
+        EGL_GREEN_SIZE,
+        6,
+        EGL_BLUE_SIZE,
+        5,
+        EGL_ALPHA_SIZE,
+        (flags & ES_WINDOW_ALPHA) ? 8 : EGL_DONT_CARE,
+        EGL_DEPTH_SIZE,
+        (flags & ES_WINDOW_DEPTH) ? 8 : EGL_DONT_CARE,
+        EGL_STENCIL_SIZE,
+        (flags & ES_WINDOW_STENCIL) ? 8 : EGL_DONT_CARE,
+        EGL_SAMPLE_BUFFERS,
+        (flags & ES_WINDOW_MULTISAMPLE) ? 1 : 0,
         EGL_NONE
     };
 
@@ -214,11 +241,13 @@ GLboolean ESUTIL_API esCreateWindow(ESContext* esContext, const char* title, GLi
         return GL_FALSE;
     }
 
-    if (!CreateEGLContext(esContext->hWnd,
-        &esContext->eglDisplay,
-        &esContext->eglContext,
-        &esContext->eglSurface,
-        attribList))
+    if (!CreateEGLContext(
+            esContext->hWnd,
+            &esContext->eglDisplay,
+            &esContext->eglContext,
+            &esContext->eglSurface,
+            attribList
+        ))
     {
         return GL_FALSE;
     }
@@ -244,13 +273,18 @@ void ESUTIL_API esMainLoop(ESContext* esContext)
     // Just one iteration! while(userInterrupt(esContext) == GL_FALSE)
     {
         gettimeofday(&t2, &tz);
-        deltatime = (float)(t2.tv_sec - t1.tv_sec + (t2.tv_usec - t1.tv_usec) * 1e-6);
+        deltatime =
+            (float)(t2.tv_sec - t1.tv_sec + (t2.tv_usec - t1.tv_usec) * 1e-6);
         t1 = t2;
 
         if (esContext->updateFunc != NULL)
+        {
             esContext->updateFunc(esContext, deltatime);
+        }
         if (esContext->drawFunc != NULL)
+        {
             esContext->drawFunc(esContext);
+        }
 
         eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
 
@@ -258,7 +292,12 @@ void ESUTIL_API esMainLoop(ESContext* esContext)
         frames++;
         if (totaltime > 2.0f)
         {
-            printf("%4d frames rendered in %1.4f seconds -> FPS=%3.4f\n", frames, totaltime, frames / totaltime);
+            printf(
+                "%4d frames rendered in %1.4f seconds -> FPS=%3.4f\n",
+                frames,
+                totaltime,
+                frames / totaltime
+            );
             totaltime -= 2.0f;
             frames = 0;
         }

@@ -1,5 +1,6 @@
 include(CMakeParseArguments)
 
+# helper function to move all files of a binary to its own directory
 function(set_freyr_target_properties TARGET)
     set_target_properties(
         ${TARGET}
@@ -10,6 +11,7 @@ function(set_freyr_target_properties TARGET)
     )
 endfunction(set_freyr_target_properties)
 
+# target when running nodejs
 function(add_npm_executable)
     cmake_parse_arguments(
         PARSED_ARGS         # prefix of output variables
@@ -28,6 +30,7 @@ function(add_npm_executable)
     )
 endfunction(add_npm_executable)
 
+# target when creating a js library from c++
 function(add_jsmodule TARGET)
     add_executable(${TARGET} ${ARGN})
     set_freyr_target_properties(${TARGET})
@@ -40,6 +43,8 @@ function(add_jsmodule TARGET)
     set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "index" SUFFIX ".js")
 endfunction(add_jsmodule)
 
+# target when creating an html target (c++ + html)
+# serve it as well via python http server
 function(add_html TARGET)
     add_executable(${TARGET} ${ARGN})
     set_freyr_target_properties(${TARGET})

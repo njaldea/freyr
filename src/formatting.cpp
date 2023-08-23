@@ -11,7 +11,10 @@ namespace freyr
          */
         struct A
         {
-            A(): x(), y(), z{}
+            A()
+                : x()
+                , y()
+                , z{}
             {
             }
 
@@ -38,7 +41,9 @@ namespace freyr
         {
         };
 
-        struct C: A, B
+        struct C
+            : A
+            , B
         {
         };
 
@@ -56,22 +61,22 @@ void foo(
 {
 }
 
-template <typename...T>
+template <typename... T>
 void bar___________________(T...)
 {
 }
 
-int main(int argc, const char** argv)
+int main(int argc, char const** argv)
 {
     int x;
     switch (x)
     {
-        case 1:
-        {
-            break;
-        }
-        default:
-            break;
+    case 1:
+    {
+        break;
+    }
+    default:
+        break;
     }
 
     for (int x = 0; x < 10; ++x)
@@ -79,7 +84,7 @@ int main(int argc, const char** argv)
         continue;
     }
 
-    for (const auto& c : { 1, 2, 3 })
+    for (auto const& c : {1, 2, 3})
     {
         break;
     }
@@ -90,37 +95,28 @@ int main(int argc, const char** argv)
 
     do
     {
-        foo(
-            1,
-            2,
-            3
-        );
+        foo(1, 2, 3);
     } while (false);
 
     if (false)
     {
     }
 
-    std::vector<int> z{ 1, 2, 3, 4, 5 };
+    std::vector<int> z{1, 2, 3, 4, 5};
     z[1];
 
-    const auto l = []() {
-        int p;
-    }; int q;
+    auto const l = []() { int p; };
+    int q;
 
     bar___________________(
-        1,
-        []() { int z; },
-        []() { int z; }
+        1, []() { int z; }, []() { int z; }
     );
 
     try
     {
-
     }
     catch (...)
     {
-
     }
 
     return 0;

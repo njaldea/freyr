@@ -14,9 +14,9 @@
 //    a minimal vertex/fragment shader.  The purpose of this
 //    example is to demonstrate the basic concepts of
 //    OpenGL ES 2.0 rendering.
-#include <stdlib.h>
 #include <freyr/opengl/esUtil.h>
 #include <iostream>
+#include <stdlib.h>
 
 typedef struct
 {
@@ -29,7 +29,7 @@ typedef struct
 // Create a shader object, load the shader source, and
 // compile the shader.
 //
-GLuint LoadShader(GLenum type, const char* shaderSrc)
+GLuint LoadShader(GLenum type, char const* shaderSrc)
 {
     GLuint shader;
     GLint compiled;
@@ -38,7 +38,9 @@ GLuint LoadShader(GLenum type, const char* shaderSrc)
     shader = glCreateShader(type);
 
     if (shader == 0)
+    {
         return 0;
+    }
 
     // Load the shader source
     glShaderSource(shader, 1, &shaderSrc, NULL);
@@ -100,14 +102,16 @@ int Init(ESContext* esContext)
     GLint linked;
 
     // Load the vertex/fragment shaders
-    vertexShader = LoadShader(GL_VERTEX_SHADER, (const char*)vShaderStr);
-    fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (const char*)fShaderStr);
+    vertexShader = LoadShader(GL_VERTEX_SHADER, (char const*)vShaderStr);
+    fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (char const*)fShaderStr);
 
     // Create the program object
     programObject = glCreateProgram();
 
     if (programObject == 0)
+    {
         return 0;
+    }
 
     glAttachShader(programObject, vertexShader);
     glAttachShader(programObject, fragmentShader);
@@ -154,9 +158,9 @@ int Init(ESContext* esContext)
 void Draw(ESContext* esContext)
 {
     UserData* userData = (UserData*)esContext->userData;
-    GLfloat vVertices[] = { 0.0f, 0.5f, 0.0f,
-                           -0.5f, -0.5f, 0.0f,
-                           0.5f, -0.5f, 0.0f };
+    GLfloat vVertices[] = {
+        0.0f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f
+    };
 
     // No clientside arrays, so do this in a webgl-friendly manner
     GLuint vertexPosObject;
@@ -192,7 +196,9 @@ int main(int argc, char* argv[])
     esCreateWindow(&esContext, "Hello Triangle", 320, 100, ES_WINDOW_RGB);
 
     if (!Init(&esContext))
+    {
         return 0;
+    }
 
     esContext.drawFunc = Draw;
 

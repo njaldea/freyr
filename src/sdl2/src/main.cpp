@@ -6,7 +6,7 @@
 SDL_Window* window;
 SDL_Renderer* renderer;
 
-SDL_Rect rect = { .x = 10, .y = 10, .w = 150, .h = 100 };
+SDL_Rect rect = {.x = 10, .y = 10, .w = 150, .h = 100};
 
 void redraw()
 {
@@ -36,18 +36,18 @@ bool handle_events()
             ticksForNextKeyDown = ticksNow + 10;
             switch (event.key.keysym.sym)
             {
-                case SDLK_UP:
-                    rect.y -= 1;
-                    break;
-                case SDLK_DOWN:
-                    rect.y += 1;
-                    break;
-                case SDLK_RIGHT:
-                    rect.x += 1;
-                    break;
-                case SDLK_LEFT:
-                    rect.x -= 1;
-                    break;
+            case SDLK_UP:
+                rect.y -= 1;
+                break;
+            case SDLK_DOWN:
+                rect.y += 1;
+                break;
+            case SDLK_RIGHT:
+                rect.x += 1;
+                break;
+            case SDLK_LEFT:
+                rect.x -= 1;
+                break;
             }
             redraw();
         }
@@ -58,9 +58,7 @@ bool handle_events()
 void run_main_loop()
 {
 #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop([]()
-    { handle_events(); },
-        0, true);
+    emscripten_set_main_loop([]() { handle_events(); }, 0, true);
 #else
     while (handle_events())
         ;
