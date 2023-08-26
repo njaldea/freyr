@@ -22,7 +22,26 @@ void redraw()
     SDL_RenderPresent(renderer);
 }
 
-uint32_t ticksForNextKeyDown = 0;
+std::array buttons = {false, false, false, false};
+
+void handle_button(SDL_Keycode code, bool value)
+{
+    switch (code)
+    {
+    case SDLK_UP:
+        buttons[0] = value;
+        break;
+    case SDLK_DOWN:
+        buttons[1] = value;
+        break;
+    case SDLK_RIGHT:
+        buttons[2] = value;
+        break;
+    case SDLK_LEFT:
+        buttons[3] = value;
+        break;
+    }
+}
 
 bool handle_events()
 {
@@ -34,28 +53,32 @@ bool handle_events()
     }
     if (event.type == SDL_KEYDOWN)
     {
-        uint32_t ticksNow = SDL_GetTicks();
-        if (SDL_TICKS_PASSED(ticksNow, ticksForNextKeyDown))
+        handle_button(event.key.keysym.sym, true);
+    }
+    else if (event.type == SDL_KEYUP)
+    {
+        handle_button(event.key.keysym.sym, false);
+    }
+
+    const auto mod = [&](bool inc, bool dcr, int SDL_Rect::*prop)
+    {
+        if (inc && dcr)
         {
-            // Throttle keydown events for 10ms.
-            ticksForNextKeyDown = ticksNow + 10;
-            switch (event.key.keysym.sym)
-            {
-            case SDLK_UP:
-                rect.y -= 1;
-                break;
-            case SDLK_DOWN:
-                rect.y += 1;
-                break;
-            case SDLK_RIGHT:
-                rect.x += 1;
-                break;
-            case SDLK_LEFT:
-                rect.x -= 1;
-                break;
-            }
-            redraw();
+            return false;
         }
+        if (inc)
+        {
+            rect.*prop += 1;
+        }
+        else if (dcr)
+        {
+            rect.*prop -= 1;
+        }
+        return true;
+    };
+    if (mod(buttons[1], buttons[0], &SDL_Rect::y) | mod(buttons[2], buttons[3], &SDL_Rect::x))
+    {
+        redraw();
     }
     return true;
 }

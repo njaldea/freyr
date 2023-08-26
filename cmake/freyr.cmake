@@ -29,10 +29,10 @@ function(add_npm_executable TARGET)
     add_jsmodule(${TARGET} ${ARGN})
 
     add_custom_target(
-        ${TARGET}-node
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/src/node_exec.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/node_exec.js
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
+        ${TARGET}_node
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/m.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/m.js
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/node_exec.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/node_exec.js
         COMMAND npm run start
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
         DEPENDS ${TARGET}
@@ -46,7 +46,7 @@ function(add_html TARGET)
     add_jsmodule(${TARGET} ${ARGN})
 
     add_custom_target(
-        ${TARGET}-serve
+        ${TARGET}_serve
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/index.html ${CMAKE_BINARY_DIR}/bin/${TARGET}/index.html
         COMMAND python3 -m http.server
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}

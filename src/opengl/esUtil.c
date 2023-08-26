@@ -18,9 +18,10 @@
 ///
 //  Includes
 //
+#include "esUtil.h"
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
-#include <freyr/opengl/esUtil.h>
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

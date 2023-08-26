@@ -1,5 +1,9 @@
 project(semantics)
 
-add_npm_executable(${PROJECT_NAME} src/semantics.cpp)
+add_library(${PROJECT_NAME} semantics.cpp)
+target_link_options(${PROJECT_NAME} PUBLIC "--bind")
 
-target_link_options(${PROJECT_NAME} PRIVATE "--bind")
+add_npm_executable(${PROJECT_NAME}_js bindings.cpp)
+target_link_libraries(${PROJECT_NAME}_js PRIVATE ${PROJECT_NAME})
+
+add_subdirectory(test)

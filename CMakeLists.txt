@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.16.3)
 
 include($ENV{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake)
-# set(CMAKE_CXX_COMPILER $ENV{EMSDK}/upstream/emscripten/em++)
-# set(CMAKE_C_COMPILER $ENV{EMSDK}/upstream/emscripten/emcc)
 
 project(freyr)
 
@@ -19,6 +17,7 @@ set(VCPKG_TARGET_TRIPLET wasm32-emscripten)
 include(cmake/freyr.cmake)
 include($ENV{VCPKG}/scripts/buildsystems/vcpkg.cmake)
 
+find_package(GTest CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
 add_subdirectory(src)
