@@ -1,6 +1,6 @@
 project(imgui)
 
-add_jsmodule(${PROJECT_NAME} main.cpp)
+add_html(${PROJECT_NAME} main.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui::imgui)
 

@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "node ."
+        "start": "node node_exec.js"
     },
     "type": "module"
 }

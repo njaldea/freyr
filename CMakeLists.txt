@@ -22,7 +22,6 @@ include($ENV{VCPKG}/scripts/buildsystems/vcpkg.cmake)
 find_package(imgui CONFIG REQUIRED)
 
 add_subdirectory(src)
-add_subdirectory(examples)
 
 find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format-18)
 file(GLOB_RECURSE ALL_SOURCE_FILES *.c *.cpp *.h *.hpp)

@@ -11,25 +11,6 @@ function(set_freyr_target_properties TARGET)
     )
 endfunction(set_freyr_target_properties)
 
-# target when running nodejs
-function(add_npm_executable)
-    cmake_parse_arguments(
-        PARSED_ARGS         # prefix of output variables
-        ""                  # list of names of the boolean arguments (only defined ones will be true)
-        "TARGET;COMMENT"    # list of names of mono-valued arguments
-        "DEPENDS;ARGS"      # list of names of multi-valued arguments (output variables are lists)
-        ${ARGN}             # arguments of the function to parse, here we take the all original ones
-    )
-
-    add_custom_target(
-        ${PARSED_ARGS_TARGET}
-        COMMAND npm run ${PARSED_ARGS_ARGS}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${PARSED_ARGS_DEPENDS}
-        COMMENT ${PARSED_ARGS_COMMENT}
-    )
-endfunction(add_npm_executable)
-
 # target when creating a js library from c++
 function(add_jsmodule TARGET)
     add_executable(${TARGET} ${ARGN})
@@ -43,15 +24,30 @@ function(add_jsmodule TARGET)
     set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "index" SUFFIX ".mjs")
 endfunction(add_jsmodule)
 
+# target when running nodejs
+function(add_npm_executable TARGET)
+    add_jsmodule(${TARGET} ${ARGN})
+
+    add_custom_target(
+        ${TARGET}-node
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/src/node_exec.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/node_exec.js
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/m.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/m.js
+        COMMAND npm run start
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
+        DEPENDS ${TARGET}
+        COMMENT ${PARSED_ARGS_COMMENT}
+    )
+endfunction(add_npm_executable)
+
 # target when creating an html target (c++ + html)
 # serve it as well via python http server
 function(add_html TARGET)
-    add_executable(${TARGET} ${ARGN})
-    set_freyr_target_properties(${TARGET})
-    set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "index" SUFFIX ".html")
+    add_jsmodule(${TARGET} ${ARGN})
 
     add_custom_target(
         ${TARGET}-serve
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/index.html ${CMAKE_BINARY_DIR}/bin/${TARGET}/index.html
         COMMAND python3 -m http.server
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
         DEPENDS ${TARGET}

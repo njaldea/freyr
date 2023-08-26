@@ -1,6 +1,6 @@
 project(opengl)
 
-add_jsmodule(
+add_html(
     ${PROJECT_NAME}
     src/glbook.cpp
     src/esUtil.c

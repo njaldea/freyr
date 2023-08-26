@@ -1,4 +1,4 @@
-import semantics from './semantics.js';
+import semantics from './m.js';
 
 console.log("javascript", "_foo");
 semantics._foo(2);

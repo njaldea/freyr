@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Emscripten-Generated Code</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    canvas {
+      width: 100%;
+      height: 500px;
+      padding: 0;
+      border: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body>
+    <button id="button1">canvas1</button>
+    <button id="button2">canvas2</button>
+    <canvas id="canvas1" oncontextmenu="event.preventDefault()"></canvas>
+    <canvas id="canvas2" oncontextmenu="event.preventDefault()"></canvas>
+    <script type="module">
+        import("/index.mjs").then(mod => (window.njla = mod.default));
+    </script>
+    <script type="module">
+        const bind = (tag) => {
+          const button = document.getElementById(`button${tag}`);
+          button.addEventListener("click", () => {
+            window.njla({ canvas: document.getElementById(`canvas${tag}`) });
+          });
+        };
+        bind(1);
+        bind(2);
+    </script>
+</body>
+
+</html>
