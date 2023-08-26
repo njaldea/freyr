@@ -107,7 +107,7 @@ extern "C"
     /// \return GL_TRUE if window creation is succesful, GL_FALSE otherwise
     GLboolean ESUTIL_API esCreateWindow(
         ESContext* esContext,
-        char const* title,
+        const char* title,
         GLint width,
         GLint height,
         GLuint flags

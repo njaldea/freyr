@@ -54,9 +54,7 @@ EGLBoolean CreateEGLContext(
     EGLContext context;
     EGLSurface surface;
     EGLConfig config;
-    EGLint contextAttribs[] = {
-        EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE
-    };
+    EGLint contextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE};
 
     // Get Display
     display = eglGetDisplay((EGLNativeDisplayType)x_display);
@@ -84,9 +82,7 @@ EGLBoolean CreateEGLContext(
     }
 
     // Create a surface
-    surface = eglCreateWindowSurface(
-        display, config, (EGLNativeWindowType)hWnd, NULL
-    );
+    surface = eglCreateWindowSurface(display, config, (EGLNativeWindowType)hWnd, NULL);
     if (surface == EGL_NO_SURFACE)
     {
         return EGL_FALSE;
@@ -116,7 +112,7 @@ EGLBoolean CreateEGLContext(
 //
 //      This function initialized the native X11 display and window for EGL
 //
-EGLBoolean WinCreate(ESContext* esContext, char const* title)
+EGLBoolean WinCreate(ESContext* esContext, const char* title)
 {
     Window root;
     XSetWindowAttributes swa;
@@ -177,13 +173,7 @@ EGLBoolean WinCreate(ESContext* esContext, char const* title)
     xev.xclient.format = 32;
     xev.xclient.data.l[0] = 1;
     xev.xclient.data.l[1] = FALSE;
-    XSendEvent(
-        x_display,
-        DefaultRootWindow(x_display),
-        FALSE,
-        SubstructureNotifyMask,
-        &xev
-    );
+    XSendEvent(x_display, DefaultRootWindow(x_display), FALSE, SubstructureNotifyMask, &xev);
 
     esContext->hWnd = (EGLNativeWindowType)win;
     return EGL_TRUE;
@@ -202,31 +192,25 @@ EGLBoolean WinCreate(ESContext* esContext, char const* title)
 //          should be created ES_WINDOW_MULTISAMPLE - specifies that a
 //          multi-sample buffer should be created
 //
-GLboolean ESUTIL_API esCreateWindow(
-    ESContext* esContext,
-    char const* title,
-    GLint width,
-    GLint height,
-    GLuint flags
-)
+GLboolean ESUTIL_API
+    esCreateWindow(ESContext* esContext, const char* title, GLint width, GLint height, GLuint flags)
 {
-    EGLint attribList[] = {
-        EGL_RED_SIZE,
-        5,
-        EGL_GREEN_SIZE,
-        6,
-        EGL_BLUE_SIZE,
-        5,
-        EGL_ALPHA_SIZE,
-        (flags & ES_WINDOW_ALPHA) ? 8 : EGL_DONT_CARE,
-        EGL_DEPTH_SIZE,
-        (flags & ES_WINDOW_DEPTH) ? 8 : EGL_DONT_CARE,
-        EGL_STENCIL_SIZE,
-        (flags & ES_WINDOW_STENCIL) ? 8 : EGL_DONT_CARE,
-        EGL_SAMPLE_BUFFERS,
-        (flags & ES_WINDOW_MULTISAMPLE) ? 1 : 0,
-        EGL_NONE
-    };
+    EGLint attribList[]
+        = {EGL_RED_SIZE,
+           5,
+           EGL_GREEN_SIZE,
+           6,
+           EGL_BLUE_SIZE,
+           5,
+           EGL_ALPHA_SIZE,
+           (flags & ES_WINDOW_ALPHA) ? 8 : EGL_DONT_CARE,
+           EGL_DEPTH_SIZE,
+           (flags & ES_WINDOW_DEPTH) ? 8 : EGL_DONT_CARE,
+           EGL_STENCIL_SIZE,
+           (flags & ES_WINDOW_STENCIL) ? 8 : EGL_DONT_CARE,
+           EGL_SAMPLE_BUFFERS,
+           (flags & ES_WINDOW_MULTISAMPLE) ? 1 : 0,
+           EGL_NONE};
 
     if (esContext == NULL)
     {
@@ -273,8 +257,7 @@ void ESUTIL_API esMainLoop(ESContext* esContext)
     // Just one iteration! while(userInterrupt(esContext) == GL_FALSE)
     {
         gettimeofday(&t2, &tz);
-        deltatime =
-            (float)(t2.tv_sec - t1.tv_sec + (t2.tv_usec - t1.tv_usec) * 1e-6);
+        deltatime = (float)(t2.tv_sec - t1.tv_sec + (t2.tv_usec - t1.tv_usec) * 1e-6);
         t1 = t2;
 
         if (esContext->updateFunc != NULL)

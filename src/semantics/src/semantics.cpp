@@ -35,8 +35,7 @@ struct ValueObject
     ValueObject(int _x)
         : x(_x)
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-                  << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 
     ValueObject()
@@ -46,8 +45,7 @@ struct ValueObject
 
     ~ValueObject()
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-                  << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 };
 
@@ -58,8 +56,11 @@ struct ValueArray
     ValueArray(int _x)
         : x(_x)
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-                  << std::endl;
+        std::cout << __FILE__ //
+                  << ":"      //
+                  << __LINE__ //
+                  << ":"      //
+                  << __FUNCTION__ << std::endl;
     }
 
     ValueArray()
@@ -69,22 +70,19 @@ struct ValueArray
 
     ~ValueArray()
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-                  << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 };
 
 ValueObject non_c_function_object()
 {
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-              << std::endl;
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     return {100};
 }
 
 ValueArray non_c_function_array()
 {
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-              << std::endl;
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     return {200};
 }
 
@@ -93,20 +91,17 @@ class Freyr
 public:
     Freyr()
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-                  << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 
     ~Freyr()
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-                  << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 
     void foo(int x)
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << ":"
-                  << x << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << ":" << x << std::endl;
     }
 };
 
@@ -115,14 +110,12 @@ class Freki
 public:
     Freki()
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-                  << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 
     ~Freki()
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-                  << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     }
 
     // if Freyr* is used, Freyr should allow_raw_pointer
@@ -136,31 +129,27 @@ public:
 
     void fizz(ValueObject& v)
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << ":"
-                  << v.x << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << ":" << v.x << std::endl;
     }
 
     void fuzz(ValueArray& v)
     {
-        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << ":"
-                  << v.x << std::endl;
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << ":" << v.x << std::endl;
     }
 };
 
 EMSCRIPTEN_BINDINGS()
 {
-    emscripten::value_object<ValueObject>("ValueStruct_value_object")
-        .field("x", &ValueObject::x);
+    emscripten::value_object<ValueObject>("ValueStruct_value_object").field("x", &ValueObject::x);
 
-    emscripten::value_array<ValueArray>("ValueStruct_value_array")
-        .element(&ValueArray::x);
+    emscripten::value_array<ValueArray>("ValueStruct_value_array").element(&ValueArray::x);
 
-    emscripten::class_<Freyr>("Freyr").constructor<>().function(
-        "foo", &Freyr::foo
-    );
+    emscripten::class_<Freyr>("Freyr") //
+        .constructor()                 //
+        .function("foo", &Freyr::foo);
 
     emscripten::class_<Freki>("Freki")
-        .constructor<>()
+        .constructor()
         .function("foo", &Freki::foo)
         .function("fizz", &Freki::fizz)
         .function("fuzz", &Freki::fuzz);
@@ -169,19 +158,24 @@ EMSCRIPTEN_BINDINGS()
     emscripten::function("non_c_function_object", &non_c_function_object);
 }
 
-EM_BOOL
-mouse_callback(int eventType, EmscriptenMouseEvent const* e, void* userData)
+EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData)
 {
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__
-              << std::endl;
-    std::cout << eventType << ':' << e->movementX << ':' << e->movementY
-              << std::endl;
+    std::cout              //
+        << __FILE__ << ":" //
+        << __LINE__ << ":" //
+        << __FUNCTION__ << std::endl;
+    std::cout                  //
+        << eventType << ':'    //
+        << e->movementX << ':' //
+        << e->movementY << std::endl;
     return false;
 }
 
 int main()
 {
-    emscripten_set_mousemove_callback(
-        EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback
-    );
+    const auto isBrowser = EM_ASM_INT({ return typeof window == "object" ? 1 : 0; });
+    if (isBrowser)
+    {
+        emscripten_set_mousemove_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
+    }
 }

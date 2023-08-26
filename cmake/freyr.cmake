@@ -35,12 +35,12 @@ function(add_jsmodule TARGET)
     add_executable(${TARGET} ${ARGN})
     set_freyr_target_properties(${TARGET})
 
-    # add modularize to disable auto execute
-    # and be able to `await` to and continue only when
-    # the module is fully loaded
+    target_link_options(${TARGET} PRIVATE "-sWASM=2")
     target_link_options(${TARGET} PRIVATE "-sMODULARIZE")
-    target_link_options(${TARGET} PRIVATE "-sWASM=1")
-    set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "index" SUFFIX ".js")
+    # target_link_options(${TARGET} PRIVATE "-sSTANDALONE_WASM")
+    # target_link_options(${TARGET} PRIVATE "-sMINIMAL_RUNTIME=1")
+    target_link_options(${TARGET} PRIVATE "-sEXPORT_NAME='${TARGET}'")
+    set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "index" SUFFIX ".mjs")
 endfunction(add_jsmodule)
 
 # target when creating an html target (c++ + html)

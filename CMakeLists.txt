@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.16.3)
 
-set(CMAKE_CXX_COMPILER $ENV{EMSDK}/upstream/emscripten/em++)
-set(CMAKE_C_COMPILER $ENV{EMSDK}/upstream/emscripten/emcc)
+include($ENV{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake)
+# set(CMAKE_CXX_COMPILER $ENV{EMSDK}/upstream/emscripten/em++)
+# set(CMAKE_C_COMPILER $ENV{EMSDK}/upstream/emscripten/emcc)
 
 project(freyr)
 
@@ -13,8 +14,12 @@ add_compile_options(-flto)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(VCPKG_TARGET_TRIPLET wasm32-emscripten)
 
 include(cmake/freyr.cmake)
+include($ENV{VCPKG}/scripts/buildsystems/vcpkg.cmake)
+
+find_package(imgui CONFIG REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(examples)

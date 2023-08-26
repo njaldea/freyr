@@ -29,7 +29,7 @@ typedef struct
 // Create a shader object, load the shader source, and
 // compile the shader.
 //
-GLuint LoadShader(GLenum type, char const* shaderSrc)
+GLuint LoadShader(GLenum type, const char* shaderSrc)
 {
     GLuint shader;
     GLint compiled;
@@ -82,19 +82,19 @@ int Init(ESContext* esContext)
     esContext->userData = malloc(sizeof(UserData));
 
     UserData* userData = (UserData*)esContext->userData;
-    GLbyte vShaderStr[] =
-        "attribute vec4 vPosition;    \n"
-        "void main()                  \n"
-        "{                            \n"
-        "   gl_Position = vPosition;  \n"
-        "}                            \n";
+    GLbyte vShaderStr[]
+        = "attribute vec4 vPosition;    \n"
+          "void main()                  \n"
+          "{                            \n"
+          "   gl_Position = vPosition;  \n"
+          "}                            \n";
 
-    GLbyte fShaderStr[] =
-        "precision mediump float;\n"
-        "void main()                                  \n"
-        "{                                            \n"
-        "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n"
-        "}                                            \n";
+    GLbyte fShaderStr[]
+        = "precision mediump float;\n"
+          "void main()                                  \n"
+          "{                                            \n"
+          "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n"
+          "}                                            \n";
 
     GLuint vertexShader;
     GLuint fragmentShader;
@@ -102,8 +102,8 @@ int Init(ESContext* esContext)
     GLint linked;
 
     // Load the vertex/fragment shaders
-    vertexShader = LoadShader(GL_VERTEX_SHADER, (char const*)vShaderStr);
-    fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (char const*)fShaderStr);
+    vertexShader = LoadShader(GL_VERTEX_SHADER, (const char*)vShaderStr);
+    fragmentShader = LoadShader(GL_FRAGMENT_SHADER, (const char*)fShaderStr);
 
     // Create the program object
     programObject = glCreateProgram();
@@ -158,9 +158,7 @@ int Init(ESContext* esContext)
 void Draw(ESContext* esContext)
 {
     UserData* userData = (UserData*)esContext->userData;
-    GLfloat vVertices[] = {
-        0.0f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f
-    };
+    GLfloat vVertices[] = {0.0f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f};
 
     // No clientside arrays, so do this in a webgl-friendly manner
     GLuint vertexPosObject;
@@ -193,7 +191,7 @@ int main(int argc, char* argv[])
     memset(&esContext, 0, sizeof(ESContext));
     esContext.userData = &userData;
 
-    esCreateWindow(&esContext, "Hello Triangle", 320, 100, ES_WINDOW_RGB);
+    esCreateWindow(&esContext, "Hello Triangle", 500, 500, ES_WINDOW_RGB);
 
     if (!Init(&esContext))
     {

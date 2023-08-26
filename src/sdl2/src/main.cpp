@@ -3,6 +3,11 @@
 #include <emscripten.h>
 #endif
 
+#include <emscripten.h>
+#include <emscripten/bind.h>
+
+#include <iostream>
+
 SDL_Window* window;
 SDL_Renderer* renderer;
 
@@ -55,27 +60,15 @@ bool handle_events()
     return true;
 }
 
-void run_main_loop()
-{
-#ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop([]() { handle_events(); }, 0, true);
-#else
-    while (handle_events())
-        ;
-#endif
-}
-
-int main()
+int main(int argc, char* argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_CreateWindowAndRenderer(300, 300, 0, &window, &renderer);
-
     redraw();
-    run_main_loop();
+    emscripten_set_main_loop([]() { handle_events(); }, 0, true);
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-
     SDL_Quit();
 }
