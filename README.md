@@ -64,13 +64,17 @@ make format
 
 ## guidelines for targets
 
-- `add_jsmodule`
+- `add_jsmodule(NAME)`
+    - will create target `NAME`
     - will create `index.mjs` and `index.wasm`
 - `add_html`:
     - call `add_jsmodule`
+    - will create target `NAME` and `NAME_serve`
     - create a target with suffix `_serve` which will setup the server
 - `add_node_executable`
     - call `add_jsmodule`
+    - will create target `NAME` and `NAME_run`
+    - will register to ctest as `NAME`
     - create a target with suffix `_node` which will execute `node_exec.js`
     - make sure to have `node_exec.js`.
 - `add_wasm_test`

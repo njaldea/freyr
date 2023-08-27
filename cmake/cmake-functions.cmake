@@ -29,9 +29,9 @@ function(add_node_executable TARGET)
     add_jsmodule(${TARGET} ${ARGN})
 
     add_custom_target(
-        ${TARGET}_start
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/m.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/m.js
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
+        ${TARGET}_run
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/projects/static/m.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/m.js
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/projects/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/node_exec.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/node_exec.js
         COMMAND npm run start
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -47,7 +47,7 @@ function(add_html TARGET)
 
     add_custom_target(
         ${TARGET}_serve
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/index.html ${CMAKE_BINARY_DIR}/bin/${TARGET}/index.html
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/projects/static/index.html ${CMAKE_BINARY_DIR}/bin/${TARGET}/index.html
         COMMAND python3 -m http.server
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
         DEPENDS ${TARGET}
@@ -60,13 +60,19 @@ function(add_wasm_test TARGET)
     target_link_libraries(${TARGET} PUBLIC GTest::gtest GTest::gtest_main GTest::gmock)
 
     add_custom_target(
-        ${TARGET}_start
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/m.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/m.js
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/test_exec.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/node_exec.js
+        ${TARGET}_run
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/projects/static/m.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/m.js
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/projects/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/projects/static/test_exec.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/node_exec.js
         COMMAND npm run start
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
         DEPENDS ${TARGET}
         COMMENT ${PARSED_ARGS_COMMENT}
+    )
+
+    add_test(
+        NAME ${TARGET}
+        COMMAND ${CMAKE_COMMAND} --build . --target ${TARGET}_run
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 endfunction(add_wasm_test)

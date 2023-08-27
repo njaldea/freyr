@@ -8,6 +8,7 @@ project(freyr CXX)
 include(cmake/vcpkg.cmake)
 include(cmake/clang-format.cmake)
 include(cmake/cmake-functions.cmake)
+include(CTest)
 
 find_package(GTest CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
