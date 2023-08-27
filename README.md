@@ -64,19 +64,30 @@ make format
 
 ## guidelines for targets
 
--   `add_jsmodule(NAME)`
+-   `add_jsmodule(NAME ...)`
     -   will create target `NAME`
     -   will create `index.mjs` and `index.wasm`
--   `add_html`:
+-   `add_html(NAME ...)`:
     -   call `add_jsmodule`
     -   will create target `NAME` and `NAME_serve`
     -   create a target with suffix `_serve` which will setup the server
--   `add_node_executable`
+-   `add_node_executable(NAME ...)`
+    -   call `add_jsmodule`
+    -   will create target `NAME` and `NAME_run`
+    -   create a target with suffix `_node` which will execute `node_exec.js`
+    -   make sure to have `node_exec.js`.
+-   `add_wasm_test(NAME ...)`
     -   call `add_jsmodule`
     -   will create target `NAME` and `NAME_run`
     -   will register to ctest as `NAME`
-    -   create a target with suffix `_node` which will execute `node_exec.js`
-    -   make sure to have `node_exec.js`.
--   `add_wasm_test`
     -   make sure to split emscripten bindings to vanilla js library
     -   only test the vanilla c++ libraries
+
+### TODO
+
+-   modules can't be destroyed, causing leak
+    -   when imgui is created, wasm resources are not released. things done:
+        -   stop runtime (via `emscripten_force_exit` call)
+        -   references to the module is set to null
+-   for libraries (non-canvas dependent):
+    -   js glue code always have canvas references. figure out how to ship minimal js/wasm if possible.

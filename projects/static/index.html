@@ -42,13 +42,25 @@
         <canvas id="canvas1" oncontextmenu="event.preventDefault()"></canvas>
         <canvas id="canvas2" oncontextmenu="event.preventDefault()"></canvas>
         <script type="module">
+            window.njla = {};
+            let stop = false;
             import("/index.mjs").then((mod) => {
                 const bind = (tag) => {
                     const button = document.getElementById(`button${tag}`);
                     button.disabled = false;
                     button.addEventListener("click", () => {
-                        mod.default({ canvas: document.getElementById(`canvas${tag}`) });
                         button.disabled = true;
+                        mod.default({
+                            canvas: document.getElementById(`canvas${tag}`),
+                            destroy: function () {
+                                button.disabled = false;
+                                try {
+                                    this._exit();
+                                } catch (ex) {
+                                    console.log("exiting: ", ex);
+                                }
+                            }
+                        }).then((v) => (window.njla[tag] = v));
                     });
                 };
                 bind(1);

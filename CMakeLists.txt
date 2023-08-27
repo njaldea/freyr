@@ -7,7 +7,7 @@ project(freyr CXX)
 
 include(cmake/vcpkg.cmake)
 include(cmake/format.cmake)
-include(cmake/cmake-functions.cmake)
+include(cmake/functions.cmake)
 include(CTest)
 
 find_package(GTest CONFIG REQUIRED)

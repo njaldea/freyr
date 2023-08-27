@@ -11,16 +11,32 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl2.h"
+
 #include <SDL.h>
 #include <SDL_opengles2.h>
+
 #include <emscripten.h>
-#include <stdio.h>
+#include <emscripten/bind.h>
+#include <iostream>
 
 // Emscripten requires to have full control over the main loop. We're going to store our SDL
 // book-keeping variables globally. Having a single function that acts as a loop prevents us to
 // store state in the stack of said function. So we need some location for this.
 SDL_Window* g_Window = NULL;
 SDL_GLContext g_GLContext = NULL;
+
+struct I
+{
+    I()
+    {
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
+    }
+
+    ~I()
+    {
+        std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
+    }
+} i;
 
 struct AnotherWindow
 {
@@ -76,9 +92,9 @@ struct MainWindow
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 } mainWindow;
 
-void main_loop(void* arg)
+void main_loop()
 {
-    (void)arg;
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << std::endl;
     ImGuiIO& io = ImGui::GetIO();
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -107,11 +123,26 @@ void main_loop(void* arg)
     SDL_GL_SwapWindow(g_Window);
 }
 
+void force_exit()
+{
+    emscripten_cancel_main_loop();
+    ImGui::DestroyContext(ImGui::GetCurrentContext());
+    SDL_GL_DeleteContext(g_GLContext);
+    SDL_DestroyWindow(g_Window);
+    SDL_Quit();
+    emscripten_force_exit(0);
+}
+
+EMSCRIPTEN_BINDINGS()
+{
+    emscripten::function("_exit", &force_exit);
+}
+
 int main(int, char**)
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
-        printf("Error: %s\n", SDL_GetError());
+        std::cout << "Error: " << SDL_GetError() << std::endl;
         return -1;
     }
 
@@ -125,10 +156,12 @@ int main(int, char**)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
+
     SDL_WindowFlags window_flags
-        = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+        = SDL_WindowFlags(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     g_Window = SDL_CreateWindow(
         "Dear ImGui Emscripten example",
         SDL_WINDOWPOS_CENTERED,
@@ -140,10 +173,9 @@ int main(int, char**)
     g_GLContext = SDL_GL_CreateContext(g_Window);
     if (!g_GLContext)
     {
-        fprintf(stderr, "Failed to initialize WebGL context!\n");
+        std::cerr << "Failed to initialize WebGL context!" << std::endl;
         return 1;
     }
-    SDL_GL_SetSwapInterval(1); // Enable vsync
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -190,5 +222,7 @@ int main(int, char**)
     // ImFont* font = io.Fonts->AddFontFromFileTTF("fonts/ArialUni.ttf", 18.0f, NULL,
     // io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != NULL);
 #endif
-    emscripten_set_main_loop_arg(main_loop, NULL, 0, true);
+    emscripten_set_main_loop(main_loop, 0, true);
+
+    SDL_GL_SetSwapInterval(1); // Enable vsync
 }

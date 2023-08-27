@@ -24,6 +24,21 @@ function(add_jsmodule TARGET)
     set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "index" SUFFIX ".mjs")
 endfunction(add_jsmodule)
 
+# target when creating an html target (c++ + html)
+# serve it as well via python http server
+function(add_html TARGET)
+    add_jsmodule(${TARGET} ${ARGN})
+    target_link_options(${TARGET} PRIVATE "-sEXIT_RUNTIME=1")
+
+    add_custom_target(
+        ${TARGET}_serve
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/projects/static/index.html ${CMAKE_BINARY_DIR}/bin/${TARGET}/index.html
+        COMMAND $ENV{EMSDK}/upstream/emscripten/emrun index.html --no_browser
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
+        DEPENDS ${TARGET}
+    )
+endfunction(add_html)
+
 # target when running nodejs
 function(add_node_executable TARGET)
     add_jsmodule(${TARGET} ${ARGN})
@@ -40,24 +55,10 @@ function(add_node_executable TARGET)
     )
 endfunction(add_node_executable)
 
-# target when creating an html target (c++ + html)
-# serve it as well via python http server
-function(add_html TARGET)
-    add_jsmodule(${TARGET} ${ARGN})
-
-    add_custom_target(
-        ${TARGET}_serve
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/projects/static/index.html ${CMAKE_BINARY_DIR}/bin/${TARGET}/index.html
-        COMMAND python3 -m http.server
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
-        DEPENDS ${TARGET}
-    )
-endfunction(add_html)
-
 function(add_wasm_test TARGET)
     add_jsmodule(${TARGET} ${ARGN})
     target_link_options(${TARGET} PRIVATE "-sEXIT_RUNTIME=1")
-    target_link_libraries(${TARGET} PUBLIC GTest::gtest GTest::gtest_main GTest::gmock)
+    target_link_libraries(${TARGET} PUBLIC GTest::gmock GTest::gtest GTest::gtest_main)
 
     add_custom_target(
         ${TARGET}_run
