@@ -22,22 +22,99 @@
 SDL_Window* g_Window = NULL;
 SDL_GLContext g_GLContext = NULL;
 
-// For clarity, our main loop code is declared at the end.
-void main_loop(void*);
+struct AnotherWindow
+{
+    void run(ImGuiIO& io)
+    {
+        if (show)
+        {
+            ImGui::Begin("Another Window", &show);
+            ImGui::Text("Hello from another window!");
+            if (ImGui::Button("Close Me"))
+            {
+                show = false;
+            }
+            ImGui::End();
+        }
+    }
+
+    bool show = false;
+} anotherWindow;
+
+struct MainWindow
+{
+    void run(ImGuiIO& io)
+    {
+        if (show)
+        {
+            ImGui::ShowDemoWindow(&show);
+        }
+
+        ImGui::Begin("Hello, world!");
+        ImGui::Text("This is some useful text.");
+        ImGui::Checkbox("Demo Window", &show);
+        ImGui::Checkbox("Another Window", &anotherWindow.show);
+        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+        ImGui::ColorEdit3("clear color", (float*)&clear_color);
+        if (ImGui::Button("Button"))
+        {
+            counter++;
+        }
+        ImGui::SameLine();
+        ImGui::Text("counter = %d", counter);
+        ImGui::Text(
+            "Application average %6.3f ms/frame (%5.1f FPS)",
+            1000.0f / io.Framerate,
+            io.Framerate
+        );
+        ImGui::End();
+    }
+
+    bool show = true;
+    float f = 0.0f;
+    int counter = 0;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+} mainWindow;
+
+void main_loop(void* arg)
+{
+    (void)arg;
+    ImGuiIO& io = ImGui::GetIO();
+    SDL_Event event;
+    while (SDL_PollEvent(&event))
+    {
+        ImGui_ImplSDL2_ProcessEvent(&event);
+    }
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(g_Window);
+    ImGui::NewFrame();
+
+    mainWindow.run(io);
+    anotherWindow.run(io);
+
+    ImGui::Render();
+    SDL_GL_MakeCurrent(g_Window, g_GLContext);
+    glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+    glClearColor(
+        mainWindow.clear_color.x,
+        mainWindow.clear_color.y,
+        mainWindow.clear_color.z,
+        mainWindow.clear_color.w
+    );
+    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    SDL_GL_SwapWindow(g_Window);
+}
 
 int main(int, char**)
 {
-    // Setup SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
         printf("Error: %s\n", SDL_GetError());
         return -1;
     }
 
-    // For the browser using Emscripten, we are going to use WebGL1 with GL ES2. See the Makefile.
-    // for requirement details. It is very likely the generated file won't work in many browsers.
-    // Firefox is the only sure bet, but I have successfully run this code on Chrome for Android for
-    // example.
     const char* glsl_version = "#version 100";
     // const char* glsl_version = "#version 300 es";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
@@ -45,7 +122,6 @@ int main(int, char**)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-    // Create window with graphics context
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
@@ -114,108 +190,5 @@ int main(int, char**)
     // ImFont* font = io.Fonts->AddFontFromFileTTF("fonts/ArialUni.ttf", 18.0f, NULL,
     // io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != NULL);
 #endif
-
-    // This function call won't return, and will engage in an infinite loop, processing events from
-    // the browser, and dispatching them.
     emscripten_set_main_loop_arg(main_loop, NULL, 0, true);
-}
-
-void main_loop(void* arg)
-{
-    ImGuiIO& io = ImGui::GetIO();
-    // We can pass this argument as the second parameter of
-    // emscripten_set_main_loop_arg(), but we don't use that.
-    IM_UNUSED(arg);
-
-    // Our state (make them static = more or less global) as a convenience to keep the example
-    // terse.
-    static bool show_demo_window = true;
-    static bool show_another_window = false;
-    static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-    // Poll and handle events (inputs, window resize, etc.)
-    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui
-    // wants to use your inputs.
-    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main
-    // application.
-    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main
-    // application. Generally you may always pass all inputs to dear imgui, and hide them from your
-    // application based on those two flags.
-    SDL_Event event;
-    while (SDL_PollEvent(&event))
-    {
-        ImGui_ImplSDL2_ProcessEvent(&event);
-        // Capture events here, based on io.WantCaptureMouse and io.WantCaptureKeyboard
-    }
-
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(g_Window);
-    ImGui::NewFrame();
-
-    // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can
-    // browse its code to learn more about Dear ImGui!).
-    if (show_demo_window)
-    {
-        ImGui::ShowDemoWindow(&show_demo_window);
-    }
-
-    // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named
-    // window.
-    {
-        static float f = 0.0f;
-        static int counter = 0;
-
-        // Create a window called "Hello, world!" and append into it.
-        ImGui::Begin("Hello, world!");
-
-        // Display some text (you can use a format strings too)
-        ImGui::Text("This is some useful text.");
-        // Edit bools storing our window open/close state
-        ImGui::Checkbox("Demo Window", &show_demo_window);
-        ImGui::Checkbox("Another Window", &show_another_window);
-
-        // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-        // Edit 3 floats representing a color
-        ImGui::ColorEdit3("clear color", (float*)&clear_color);
-
-        // Buttons return true when clicked (most widgets return true when edited/activated)
-        if (ImGui::Button("Button"))
-        {
-            counter++;
-        }
-        ImGui::SameLine();
-        ImGui::Text("counter = %d", counter);
-
-        ImGui::Text(
-            "Application average %.3f ms/frame (%.1f FPS)",
-            1000.0f / ImGui::GetIO().Framerate,
-            ImGui::GetIO().Framerate
-        );
-        ImGui::End();
-    }
-
-    // 3. Show another simple window.
-    if (show_another_window)
-    {
-        // Pass a pointer to our bool variable (the window will have a closing button that will
-        // clear the bool when clicked)
-        ImGui::Begin("Another Window", &show_another_window);
-        ImGui::Text("Hello from another window!");
-        if (ImGui::Button("Close Me"))
-        {
-            show_another_window = false;
-        }
-        ImGui::End();
-    }
-
-    // Rendering
-    ImGui::Render();
-    SDL_GL_MakeCurrent(g_Window, g_GLContext);
-    glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-    glClear(GL_COLOR_BUFFER_BIT);
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    SDL_GL_SwapWindow(g_Window);
 }

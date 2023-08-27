@@ -69,25 +69,10 @@ make format
 - `add_html`:
     - call `add_jsmodule`
     - create a target with suffix `_serve` which will setup the server
-- `add_npm_executable`
+- `add_node_executable`
     - call `add_jsmodule`
     - create a target with suffix `_node` which will execute `node_exec.js`
     - make sure to have `node_exec.js`.
-- when writing tests for c++ libraries
+- `add_wasm_test`
     - make sure to split emscripten bindings to vanilla js library
-    - only test the vanilla js library
-
-```cpp
-int main() {
-    testing::InitGoogleTest();
-    emscripten_force_exit(RUN_ALL_TESTS());
-}
-```
-
-```javascript
-// this library is a wrapper to load the js/wasm modules produced by add_jsmodule
-import m from './m.js';
-
-// TODO: hide this to cmake function:
-//  - maybe by creating a separate `node_exec.js` that will be copied specifically for tests
-```
+    - only test the vanilla c++ libraries

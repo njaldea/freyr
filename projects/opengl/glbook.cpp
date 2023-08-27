@@ -14,7 +14,7 @@
 //    a minimal vertex/fragment shader.  The purpose of this
 //    example is to demonstrate the basic concepts of
 //    OpenGL ES 2.0 rendering.
-#include <freyr/opengl/esUtil.h>
+#include "esUtil.h"
 #include <iostream>
 #include <stdlib.h>
 

@@ -1,4 +1,4 @@
-include(CMakeParseArguments)
+# include(CMakeParseArguments)
 
 # helper function to move all files of a binary to its own directory
 function(set_freyr_target_properties TARGET)
@@ -25,20 +25,20 @@ function(add_jsmodule TARGET)
 endfunction(add_jsmodule)
 
 # target when running nodejs
-function(add_npm_executable TARGET)
+function(add_node_executable TARGET)
     add_jsmodule(${TARGET} ${ARGN})
 
     add_custom_target(
-        ${TARGET}_node
+        ${TARGET}_start
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/m.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/m.js
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/node_exec.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/node_exec.js
         COMMAND npm run start
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         DEPENDS ${TARGET}
         COMMENT ${PARSED_ARGS_COMMENT}
     )
-endfunction(add_npm_executable)
+endfunction(add_node_executable)
 
 # target when creating an html target (c++ + html)
 # serve it as well via python http server
@@ -53,3 +53,20 @@ function(add_html TARGET)
         DEPENDS ${TARGET}
     )
 endfunction(add_html)
+
+function(add_wasm_test TARGET)
+    add_jsmodule(${TARGET} ${ARGN})
+    target_link_options(${TARGET} PRIVATE "-sEXIT_RUNTIME=1")
+    target_link_libraries(${TARGET} PUBLIC GTest::gtest GTest::gtest_main GTest::gmock)
+
+    add_custom_target(
+        ${TARGET}_start
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/m.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/m.js
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/package.json ${CMAKE_BINARY_DIR}/bin/${TARGET}/package.json
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/static/test_exec.js ${CMAKE_BINARY_DIR}/bin/${TARGET}/node_exec.js
+        COMMAND npm run start
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${TARGET}
+        DEPENDS ${TARGET}
+        COMMENT ${PARSED_ARGS_COMMENT}
+    )
+endfunction(add_wasm_test)
