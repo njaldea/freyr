@@ -6,7 +6,7 @@ include(cmake/toolchain.cmake)
 project(freyr CXX)
 
 include(cmake/vcpkg.cmake)
-include(cmake/clang-format.cmake)
+include(cmake/format.cmake)
 include(cmake/cmake-functions.cmake)
 include(CTest)
 

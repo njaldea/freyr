@@ -6,10 +6,7 @@
         {
             "name": "imgui",
             "version>=": "1.89.7",
-            "features": [
-                "sdl2-binding",
-                "opengl3-binding"
-            ]
+            "features": ["sdl2-binding", "opengl3-binding"]
         },
         {
             "name": "gtest",

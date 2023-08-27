@@ -1,4 +1,4 @@
-import semantics from './m.js';
+import semantics from "./m.js";
 
 console.log("javascript", "_foo");
 semantics._foo(2);
@@ -22,7 +22,7 @@ console.log("javascript", "Freki.fizz");
 freki.fizz({ x: 300 });
 
 console.log("javascript", "Freki.fuzz");
-freki.fuzz([ 400 ]);
+freki.fuzz([400]);
 
 freyr.delete();
 freki.delete();
